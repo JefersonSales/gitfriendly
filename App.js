@@ -1,5 +1,5 @@
 import React from 'react'
-import Login from './pages/login'
+import Router from './src/routes'
 export default function App() {
-	return <Login />
+	return <Router />
 }
