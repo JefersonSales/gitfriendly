@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, View, StyleSheet, Image, Text, TouchableOpacity, AsyncStorage } from 'react-native'
+import io from 'socket.io-client'
 
 import logo from '../../assets/logo.png'
 import like from '../../assets/like.png'
+import itsamarch from '../../assets/itsamatch.png'
 import dislike from '../../assets/dislike.png'
 import api from '../services/api'
 
 export default function Main({ navigation }) {
 	const id = navigation.getParam('id')
 	const [users, setUsers] = useState([])
+	const [matchDev, setMatchDev] = useState(null)
+
 	useEffect(() => {
 		async function loadUsers() {
 			const response = await api.get('/devs', {
@@ -19,6 +23,16 @@ export default function Main({ navigation }) {
 			setUsers(response.data)
 		}
 		loadUsers()
+	}, [id])
+
+	useEffect(() => {
+		const socket = io('https://backend-gitfriendly.herokuapp.com/', {
+			query: { user: id },
+		})
+
+		socket.on('match', dev => {
+			setMatchDev(dev)
+		})
 	}, [id])
 
 	async function handleLike() {
@@ -70,6 +84,20 @@ export default function Main({ navigation }) {
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.button} onPress={handleDislike}>
 						<Image source={like} />
+					</TouchableOpacity>
+				</View>
+			)}
+
+			{matchDev && (
+				<View style={styles.matchContainer}>
+					<Image style={styles.matchImage} source={itsamarch} />
+					<Image style={styles.matchAvatar} source={{ uri: matchDev.avatar }} />
+
+					<Text style={styles.macthName}>{matchDev.name}</Text>
+					<Text style={styles.macthBio}>{matchDev.bio}</Text>
+
+					<TouchableOpacity onPress={() => setMatchDev(null)}>
+						<Text style={styles.closeMacth}>Fechar</Text>
 					</TouchableOpacity>
 				</View>
 			)}
@@ -144,5 +172,44 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		marginHorizontal: 30,
+	},
+
+	matchContainer: {
+		...StyleSheet.absoluteFillObject,
+		backgroundColor: 'rgba(0,0,0,.8)',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	matchImage: {
+		height: 60,
+		resizeMode: 'contain',
+	},
+	matchAvatar: {
+		width: 160,
+		height: 160,
+		borderRadius: 80,
+		borderWidth: 5,
+		borderColor: '#fff',
+		marginVertical: 30,
+	},
+	matchName: {
+		fontSize: 26,
+		fontWeight: 'bold',
+		color: '#fff',
+	},
+	macthBio: {
+		marginTop: 10,
+		fontSize: 16,
+		color: 'rgba(255,255,255,.8)',
+		lineHeight: 24,
+		textAlign: 'center',
+		paddingHorizontal: 30,
+	},
+	closeMacth: {
+		fontSize: 16,
+		color: 'rgba(255,255,255,.8)',
+		textAlign: 'center',
+		marginTop: 30,
+		fontWeight: 'bold',
 	},
 })
