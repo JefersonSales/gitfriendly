@@ -9,10 +9,10 @@ import dislike from '../../assets/dislike.png'
 import api from '../services/api'
 
 export default function Main({ navigation }) {
-	const id = navigation.getParam('id')
+	const id = navigation.getParam('user')
 	const [users, setUsers] = useState([])
 	const [matchDev, setMatchDev] = useState(null)
-
+	console.log(id)
 	useEffect(() => {
 		async function loadUsers() {
 			const response = await api.get('/devs', {
@@ -26,7 +26,7 @@ export default function Main({ navigation }) {
 	}, [id])
 
 	useEffect(() => {
-		const socket = io('https://backend-gitfriendly.herokuapp.com/', {
+		const socket = io('https://backend-gitfriendly.herokuapp.com', {
 			query: { user: id },
 		})
 
@@ -72,6 +72,7 @@ export default function Main({ navigation }) {
 							<View style={styles.footer}>
 								<Text style={styles.name}>{user.name}</Text>
 								<Text style={styles.bio}>{user.bio}</Text>
+								<Text style={styles.bio}>{user.public_repos}</Text>
 							</View>
 						</View>
 					))
