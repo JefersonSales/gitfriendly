@@ -2,6 +2,7 @@ import { createAppContainer } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
 
 import Login from './pages/Login'
+import CadSkils from './pages/CadSkils'
 import Main from './pages/Main'
 
 export default createAppContainer(
@@ -9,6 +10,9 @@ export default createAppContainer(
 		{
 			Login: {
 				screen: Login,
+			},
+			CadSkils: {
+				screen: CadSkils,
 			},
 			Main: {
 				screen: Main,

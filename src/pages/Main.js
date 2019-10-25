@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, View, StyleSheet, Image, Text, TouchableOpacity, AsyncStorage } from 'react-native'
 import io from 'socket.io-client'
+import LottieView from 'lottie-react-native'
 
 import logo from '../../assets/logo.png'
 import like from '../../assets/like.png'
@@ -12,7 +13,7 @@ export default function Main({ navigation }) {
 	const id = navigation.getParam('user')
 	const [users, setUsers] = useState([])
 	const [matchDev, setMatchDev] = useState(null)
-	console.log(id)
+
 	useEffect(() => {
 		async function loadUsers() {
 			const response = await api.get('/devs', {
@@ -60,6 +61,9 @@ export default function Main({ navigation }) {
 	return (
 		<SafeAreaView style={styles.container}>
 			<TouchableOpacity onPress={handleLogout}>
+				<View style={{ width: 200, height: 200 }}>
+					<LottieView resizeMode='contain' source={require('../../assets/github-logo.json')} autoPlay loop />
+				</View>
 				<Image source={logo} style={styles.logo} />
 			</TouchableOpacity>
 			<View style={styles.cardContainer}>
